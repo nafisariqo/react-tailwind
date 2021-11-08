@@ -5,22 +5,87 @@ import axios from 'axios';
 function App({ fixed }) {
   const [menuOpen, setMenuOpen] = React.useState(false);
   const [data, setData] = useState([]);
+  const [genres, setGenres] = useState([]);
+  const [rating, setRating] = useState('');
+  const [user, setUser] = useState([]);
+  const [userProfile, setUserProfile] = useState([]);
+  const imgUrl = "https://image.tmdb.org/t/p/original";
+  
+  const handleSubmit = event => {
+    event.preventDefault();
+  
+    const post = {
+     value: rating
+    };
+  
+    axios.post('https://api.themoviedb.org/3/movie/671583/rating?api_key=cc9132f1d26c0a3db6082a228e1f3ea2&session_id=af4089180a0713439c9a098a3a276a75b0cfabcc', post, {
+      headers: {
+        'Content-Type': 'application/json;charset=UTF-8',
+      },
+      
+    })
+   .then(res => {
+      console.log(res);
+      console.log(res.data);
+      window.location.reload();
+     })
+     .catch(error => {
+       console.log(error);
+     })
+   }
 
-  // const getData = () => {
-  //   const data = axios.get('https://api.themoviedb.org/3/movie/671583?api_key=cc9132f1d26c0a3db6082a228e1f3ea2').then(response =>{
-  //     console.log(response.data)
-  //   }).catch(error =>{
-  //     console.log(error);
-  //   })
-  // }
+   const handleDelete = event => {
+    event.preventDefault();
+  
+    axios.delete('https://api.themoviedb.org/3/movie/671583/rating?api_key=cc9132f1d26c0a3db6082a228e1f3ea2&session_id=af4089180a0713439c9a098a3a276a75b0cfabcc', {
+      headers: {
+        'Content-Type': 'application/json;charset=UTF-8',
+      },
+      
+    })
+   .then(res => {
+      console.log(res);
+      console.log(res.data);
+      window.location.reload();
+     })
+     .catch(error => {
+       console.log(error);
+     })
+   }
 
-  useEffect( () => {
+  const getData = () => {
     axios.get('https://api.themoviedb.org/3/movie/671583?api_key=cc9132f1d26c0a3db6082a228e1f3ea2').then(response =>{
       console.log(response.data)
+      console.log(response.data.genres)
       setData(response.data);
+      setGenres(response.data.genres);
     }).catch(error =>{
       console.log(error);
     })
+  }
+
+  const getDataUser = () => {
+    axios.get('https://api.themoviedb.org/3/account?api_key=cc9132f1d26c0a3db6082a228e1f3ea2&session_id=af4089180a0713439c9a098a3a276a75b0cfabcc').then(response =>{
+      console.log(response.data);
+      setUser(response.data);
+    }).catch(error =>{
+      console.log(error);
+    })
+  }
+
+  const getDataUserProfile = () => {
+    axios.get('https://api.themoviedb.org/3/account/11393983/rated/movies?api_key=cc9132f1d26c0a3db6082a228e1f3ea2&session_id=af4089180a0713439c9a098a3a276a75b0cfabcc').then(response =>{
+      console.log(response.data);
+      setUserProfile(response.data.results);
+    }).catch(error =>{
+      console.log(error);
+    })
+  }
+
+  useEffect( () => {
+    getData();
+    getDataUser();
+    getDataUserProfile();
   }, []);
 
   return (
@@ -82,7 +147,7 @@ function App({ fixed }) {
               </div>
             </div>
           </nav>
-          <nav className="block text-sm text-left text-blue-700 bg-blue-400 bg-opacity-10 h-12 flex items-center p-4 rounded-md" role="alert">
+          <nav className="text-sm text-left text-blue-700 bg-blue-400 bg-opacity-10 h-12 flex items-center p-4 rounded-md" role="alert">
             <ol className="list-reset flex text-grey-dark m-4">
                 <li><a href="#" className="font-bold">Home</a></li>
                 <li><span className="mx-2">/</span></li>
@@ -127,7 +192,7 @@ function App({ fixed }) {
                   animation-delay-4000
                 "></div>
                     <div className="relative">
-                      <img className="object-cover object-center mx-auto rounded-lg shadow-2xl" alt="hero" src="https://image.tmdb.org/t/p/w500/xfYMQNApIIh8KhpNVtG1XRz0ZAp.jpg"></img>
+                      <img className="object-cover object-center mx-auto rounded-lg shadow-2xl" alt="hero" src={imgUrl + data.poster_path}></img>
                     </div>
                   </div>
                 </div>
@@ -157,11 +222,87 @@ function App({ fixed }) {
                 <p id="overview" className="mb-8 text-base leading-relaxed text-left text-gray-300">{data.overview}</p>
                 <div className="flex-col mt-0 lg:mt-6 max-w-7xl sm:flex">
                   <div className="prose prose-md">
-                      <span id="genre-1" className="inline-flex items-center justify-center mx-2 px-2 py-1 text-xs font-bold leading-none bg-green-200 text-green-800 rounded">{data.genres[0].name}</span>
+                      {genres.map((genresList, index) => {
+                        return <span id="genre-2" key={index} className="inline-flex items-center justify-center mx-2 px-2 py-1 text-xs font-bold leading-none bg-blue-200 text-blue-800 rounded">{genresList.name}</span>
+                      })}
+                      {/* <span id="genre-1" className="inline-flex items-center justify-center mx-2 px-2 py-1 text-xs font-bold leading-none bg-green-200 text-green-800 rounded">{data.genres[0].name}</span>
                       <span id="genre-2" className="inline-flex items-center justify-center mx-2 px-2 py-1 text-xs font-bold leading-none bg-blue-200 text-blue-800 rounded">{data.genres[1].name}</span>
-                      <span id="genre-3" className="inline-flex items-center justify-center mx-2 px-2 py-1 text-xs font-bold leading-none bg-purple-200 text-purple-800 rounded">{data.genres[2].name}</span>
+                      <span id="genre-3" className="inline-flex items-center justify-center mx-2 px-2 py-1 text-xs font-bold leading-none bg-purple-200 text-purple-800 rounded">{data.genres[2].name}</span> */}
                   </div>
                 </div>
+
+                <div class="w-full max-w-xs mt-10">
+                  <form class="">
+                    <div class="mb-4">
+                      <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="username" type="number" placeholder="Rate Movie" value={rating} onChange={e => setRating(e.target.value)}></input>
+                    </div>
+                    <div class="flex items-center justify-between">
+                      <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit" onClick={handleSubmit}>
+                        Submit
+                      </button>
+                    </div>
+                  </form>
+                </div>
+                
+                <section class="text-gray-600">
+                  <div class="container px-5 py-24 mx-auto">
+                    <div class="flex flex-col">
+                      <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                        <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+                          <div class="overflow-hidden sm:rounded">
+                            <table class="min-w-full">
+                              <thead class="bg-gray-50">
+                                <tr>
+                                  <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase ">Username</th>
+                                  <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase ">Title</th>
+                                  <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase ">Rate</th>
+                                  <th scope="col" class="relative px-6 py-3">
+                                    <span class="sr-only">Delete</span>
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                
+                                {userProfile.map((profile, index) => {
+                                  return <tr class="bg-white" key={index}>
+                                    <td class="px-6 py-4 text-sm font-medium text-gray-900  whitespace-nowrap">{user.username}</td>
+                                    <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">{profile.original_title}</td>
+                                    <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">{profile.rating}</td>
+                                    <td class="px-6 py-4 text-sm font-medium text-right  whitespace-nowrap">
+                                      <a href="#" class="text-blue-600 hover:text-blue-900" onClick={handleDelete}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"> 
+                                          <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /> 
+                                        </svg>
+                                      </a>
+                                    </td>
+                                  </tr>
+                                })}
+                                
+                                
+                                {/* <tr class="bg-gray-50">
+                                  <td class="px-6 py-4 text-sm font-medium text-gray-900  whitespace-nowrap"> Vercel </td>
+                                  <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap"> vercel.com </td>
+                                  <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap"> vercel@example.com </td>
+                                  <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap"> Hosting </td>
+                                  <td class="px-6 py-4 text-sm font-medium text-right  whitespace-nowrap">
+                                    <a href="#" class="text-blue-600 hover:text-blue-900">
+                                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                                      </svg>
+                                    </a>
+                                  </td>
+                                </tr> */}
+                                
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+        
+
               </div>
             </div>
           </div>
