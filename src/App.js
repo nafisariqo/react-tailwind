@@ -7,6 +7,7 @@ function App({ fixed }) {
   const [data, setData] = useState([]);
   const [genres, setGenres] = useState([]);
   const [rating, setRating] = useState('');
+  // const [session, setSession] = useState([]);
   const [user, setUser] = useState([]);
   const [userProfile, setUserProfile] = useState([]);
   const imgUrl = "https://image.tmdb.org/t/p/original";
@@ -18,7 +19,7 @@ function App({ fixed }) {
      value: rating
     };
   
-    axios.post('https://api.themoviedb.org/3/movie/671583/rating?api_key=cc9132f1d26c0a3db6082a228e1f3ea2&session_id=af4089180a0713439c9a098a3a276a75b0cfabcc', post, {
+    axios.post(`https://api.themoviedb.org/3/movie/671583/rating?api_key=${process.env.REACT_APP_API_KEY}&session_id=${process.env.REACT_APP_SESSION_ID}`, post, {
       headers: {
         'Content-Type': 'application/json;charset=UTF-8',
       },
@@ -27,7 +28,9 @@ function App({ fixed }) {
    .then(res => {
       console.log(res);
       console.log(res.data);
-      window.location.reload();
+      getDataUserProfile();
+
+      // window.location.reload();
      })
      .catch(error => {
        console.log(error);
@@ -37,7 +40,7 @@ function App({ fixed }) {
    const handleDelete = event => {
     event.preventDefault();
   
-    axios.delete('https://api.themoviedb.org/3/movie/671583/rating?api_key=cc9132f1d26c0a3db6082a228e1f3ea2&session_id=af4089180a0713439c9a098a3a276a75b0cfabcc', {
+    axios.delete(`https://api.themoviedb.org/3/movie/671583/rating?api_key=${process.env.REACT_APP_API_KEY}&session_id=${process.env.REACT_APP_SESSION_ID}`, {
       headers: {
         'Content-Type': 'application/json;charset=UTF-8',
       },
@@ -46,7 +49,8 @@ function App({ fixed }) {
    .then(res => {
       console.log(res);
       console.log(res.data);
-      window.location.reload();
+      getDataUserProfile();
+      // window.location.reload();
      })
      .catch(error => {
        console.log(error);
@@ -54,7 +58,7 @@ function App({ fixed }) {
    }
 
   const getData = () => {
-    axios.get('https://api.themoviedb.org/3/movie/671583?api_key=cc9132f1d26c0a3db6082a228e1f3ea2').then(response =>{
+    axios.get(`https://api.themoviedb.org/3/movie/671583?api_key=${process.env.REACT_APP_API_KEY}`).then(response =>{
       console.log(response.data)
       console.log(response.data.genres)
       setData(response.data);
@@ -65,7 +69,7 @@ function App({ fixed }) {
   }
 
   const getDataUser = () => {
-    axios.get('https://api.themoviedb.org/3/account?api_key=cc9132f1d26c0a3db6082a228e1f3ea2&session_id=af4089180a0713439c9a098a3a276a75b0cfabcc').then(response =>{
+    axios.get(`https://api.themoviedb.org/3/account?api_key=${process.env.REACT_APP_API_KEY}&session_id=${process.env.REACT_APP_SESSION_ID}`).then(response =>{
       console.log(response.data);
       setUser(response.data);
     }).catch(error =>{
@@ -74,7 +78,7 @@ function App({ fixed }) {
   }
 
   const getDataUserProfile = () => {
-    axios.get('https://api.themoviedb.org/3/account/11393983/rated/movies?api_key=cc9132f1d26c0a3db6082a228e1f3ea2&session_id=af4089180a0713439c9a098a3a276a75b0cfabcc').then(response =>{
+    axios.get(`https://api.themoviedb.org/3/account/11393983/rated/movies?api_key=${process.env.REACT_APP_API_KEY}&session_id=${process.env.REACT_APP_SESSION_ID}`).then(response =>{
       console.log(response.data);
       setUserProfile(response.data.results);
     }).catch(error =>{
@@ -82,10 +86,21 @@ function App({ fixed }) {
     })
   }
 
+  // const getGuestSession = () => {
+  //   axios.get(`https://api.themoviedb.org/3/authentication/guest_session/new?api_key=${process.env.REACT_APP_API_KEY}`).then(response =>{
+  //     // console.log(response.data);
+  //     setSession(response.data);
+  //   }).catch(error =>{
+  //     console.log(error);
+  //   })
+  // }
+
   useEffect( () => {
     getData();
     getDataUser();
     getDataUserProfile();
+    // getGuestSession();
+    // console.log(session.guest_session_id);
   }, []);
 
   return (
@@ -237,7 +252,7 @@ function App({ fixed }) {
                       <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="username" type="number" placeholder="Rate Movie" value={rating} onChange={e => setRating(e.target.value)}></input>
                     </div>
                     <div class="flex items-center justify-between">
-                      <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit" onClick={handleSubmit}>
+                      <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" onClick={handleSubmit}>
                         Submit
                       </button>
                     </div>
