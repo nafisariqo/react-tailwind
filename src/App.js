@@ -260,10 +260,10 @@ function App({ fixed }) {
                 </div>
                 
                 <section class="text-gray-600">
-                  <div class="container px-5 py-24 mx-auto">
+                  <div class="container px-2 py-14 mx-auto">
                     <div class="flex flex-col">
                       <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                        <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+                        <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-3">
                           <div class="overflow-hidden sm:rounded">
                             <table class="min-w-full">
                               <thead class="bg-gray-50">
@@ -317,7 +317,19 @@ function App({ fixed }) {
                   </div>
                 </section>
         
-
+                <div className="
+                  flex flex-col
+                  items-start
+                  mt-12
+                  mb-16
+                  text-left
+                  lg:flex-grow lg:w-1/2 lg:pl-6
+                  xl:pl-24
+                  md:mb-0
+                  xl:mt-0
+                "/>
+                {/* <span className="mb-8 text-xs font-bold tracking-widest text-blue-400 uppercase">Buy Ticket Here</span> */}
+                
               </div>
             </div>
           </div>
@@ -522,4 +534,4 @@ function App({ fixed }) {
   );
 }
 
-export default App;
+export default App; 
